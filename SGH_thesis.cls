@@ -88,37 +88,29 @@ Path      = fonts/,%
 
 %%% Headers
 \RequirePackage{fancyhdr}
-\pagestyle{fancy}
-\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
-\renewcommand{\sectionmark}[1]{\markright{#1}}
-\fancyhf{}
 
-\fancyhead[LE]{%
-  \makebox[0pt][r]{%
-    \colorbox{deepred}{\makebox[\textwidth][r]{\textcolor{white}{\thepage}\enskip}}\hspace*{1em}}%
-  {\rightmark}\hspace*{1em}\headrulefill%
-}
-\fancyhead[RO]{%
-  \mbox{}\headrulefill \hspace*{1em}{\leftmark}%
-  \makebox[0pt][l]{%
-    \hspace*{1em}\colorbox{deepred}{\makebox[\textwidth][l]{\enskip\textcolor{white}{\thepage}}}}%
-}
+\pagestyle{fancy}
+\renewcommand{\chaptermark}[1]{\markboth{\bfseries#1}{}}
+\renewcommand{\sectionmark}[1]{\markright{\bfseries#1}}
+  \fancyhf{}
+  \fancyhead[LE]{%
+    \makebox[0pt][r]{%
+      \colorbox{deepred}{\makebox[\textwidth][r]{\textcolor{white}{\thepage}\enskip}}\hspace*{1em}}%
+    {\rightmark}\hspace*{1em}\headrulefill%
+  }
+  \fancyhead[RO]{%
+    \mbox{}\headrulefill \hspace*{1em}{\leftmark}%
+    \makebox[0pt][l]{%
+      \hspace*{1em}\colorbox{deepred}{\makebox[\textwidth][l]{\enskip\textcolor{white}{\thepage}}}}%
+  }
+
 \renewcommand\headrulewidth{0pt}
 
-\fancypagestyle{plain}{\fancyhf{}}
-%   \fancyhead[LE]{%
-%     \makebox[0pt][r]{
-%       \colorbox{deepred}{\makebox[\textwidth][r]{\textcolor{white}{\thepage}\enskip}}\hspace*{1em}}%
-%     {\rightmark}\hspace*{1em}\headrulefill%
-%   }
-%   \fancyhead[RO]{%
-%     \mbox{}\headrulefill \hspace*{1em}{\leftmark}%
-%     \makebox[0pt][l]{%
-%       \hspace*{1em}\colorbox{deepred}{\makebox[\textwidth][l]{\enskip\textcolor{white}{\thepage}}}}%
-%   }
-% }
-
 \def\headrulefill{\leaders\hrule width 0pt height 3pt depth -2.8pt \hfill}
+
+% remove page numbering from plain pages
+% affects chapter title pages
+\fancypagestyle{plain}{\fancyhf{}}
 
 % clear empty trailing left page
 % http://www.texfaq.org/FAQ-reallyblank
@@ -144,13 +136,16 @@ Path      = fonts/,%
 \RequirePackage[explicit]{titlesec}
 \RequirePackage{anyfontsize}
 
-\titleformat{\chapter}[display]
-  {\Huge}
-  {\scshape\flushright{\fontsize{72}{0}\textcolor{deepred}{\thechapter}}}{0pt}
-  {#1\vskip60pt}
-% \titleformat{\chapter}{\flushright\scshape\fontsize{72}{60}\bfseries}{\thechapter}{20pt}{\Huge}
-% \titleformat{\chapter}{\bfseries}{\scshape\fontsize{72}{60}\color{deepred}}{\hfill}{}[]
-
+\titleformat{\chapter}[hang]{}{%
+  \begin{minipage}[c][3em][c]{.8\textwidth}
+    \bfseries\fontsize{40}{40}\selectfont#1
+  \end{minipage}
+  \hspace*{3em}
+  \colorbox{deepred}{%
+    \begin{minipage}[c][5em][c]{.5\textwidth}
+      {\hspace*{.5em}\fontsize{90}{90}\selectfont\textcolor{white}{\scshape\thechapter}}
+    \end{minipage}
+}}{0pt}{}[\vspace*{5em}]
 
 \renewcommand*{\maketitle}{%
 \begin{titlepage}
