@@ -57,7 +57,7 @@ Path      = fonts/,%
 \def\degree#1{\gdef\@degree{#1}}
 % year and term
 \def\degreedate#1{\gdef\@degreedate{#1}}
-
+% supervisors
 \def\supervisors#1{\gdef\@supervisors{#1}}
 \newif\ifsupervisors
 
@@ -67,8 +67,8 @@ Path      = fonts/,%
 \ifelectronicversion
   \RequirePackage[%
   includehead,%
-  top      = 3.5cm,%
-  bottom   = 3.5cm,%
+  top      = 2.5cm,%
+  bottom   = 2.5cm,%
   inner    = 2.8cm,%
   outer    = 2.8cm,%
   headsep  = 0.8cm,%
@@ -77,8 +77,8 @@ Path      = fonts/,%
 \else
   \RequirePackage[%
   includehead,%
-  top      = 3.5cm,%
-  bottom   = 3.5cm,%
+  top      = 2.5cm,%
+  bottom   = 2.5cm,%
   inner    = 3.8cm,%
   outer    = 1.8cm,%
   headsep  = 0.8cm,%
@@ -121,20 +121,13 @@ Path      = fonts/,%
 }
 \let\cleardoublepage\clearemptydoublepage
 
-%%% ToC formatting
-\RequirePackage{titletoc}
-% % \tocless will be used to make summary not present in ToC
-% \newcommand{\nocontentsline}[3]{}
-% \newcommand{\tocless}[2]{\bgroup\let\addcontentsline=\nocontentsline#1{#2}\egroup}
-
-\titlecontents{chapter}[0pt]{\vspace{15pt}\bfseries\large\color{deepred}}{\contentslabel{0pt}\scshape\hspace{20pt}}{}{\hfill\upshape\contentspage}[]
-\titlecontents{section}[20pt]{\vspace{5pt}\bfseries}{\contentslabel{0pt}\hspace{30pt}}{}{\mdseries\titlerule*[.5pc]{.}\bfseries\contentspage}
-\titlecontents{subsection}[40pt]{}{\contentslabel{0pt}\hspace{35pt}}{\contentsmargin{0pt}\scshape}{\titlerule*[.5pc]{.}\contentspage}[]
-\titlecontents{subsubsection}[60pt]{}{}{\contentsmargin{0pt}\itshape}{\titlerule*[.5pc]{.}\contentspage}[]
-
 %%% Chapter and Section titles
 \RequirePackage[explicit]{titlesec}
 \RequirePackage{anyfontsize}
+
+\newenvironment{numberlesschapter}
+  {\setcounter{secnumdepth}{0}}
+  {\setcounter{secnumdepth}{2}}
 
 \titleformat{\chapter}[hang]{}{%
   \begin{minipage}[c][3em][c]{.8\textwidth}
@@ -147,18 +140,36 @@ Path      = fonts/,%
     \end{minipage}
 }}{0pt}{}[\vspace*{5em}]
 
+%%% ToC formatting
+\RequirePackage{titletoc}
+% % \tocless will be used to make summary not present in ToC
+% \newcommand{\nocontentsline}[3]{}
+% \newcommand{\tocless}[2]{\bgroup\let\addcontentsline=\nocontentsline#1{#2}\egroup}
+\renewcommand*\contentsname{Contents}
+\titlecontents{chapter}[0pt]{\vspace{15pt}\bfseries\large\color{deepred}}{\contentslabel{0pt}\scshape\hspace{20pt}}{}{\hfill\upshape\contentspage}[]
+\titlecontents{section}[20pt]{\vspace{5pt}\bfseries}{\contentslabel{0pt}\hspace{30pt}}{}{\mdseries\titlerule*[.5pc]{.}\bfseries\contentspage}
+\titlecontents{subsection}[40pt]{}{\contentslabel{0pt}\hspace{35pt}}{\contentsmargin{0pt}\scshape}{\titlerule*[.5pc]{.}\contentspage}[]
+\titlecontents{subsubsection}[60pt]{}{}{\contentsmargin{0pt}\itshape}{\titlerule*[.5pc]{.}\contentspage}[]
+
+\renewcommand{\contentsname}{Contents}
+\renewcommand\tableofcontents{%
+    \numberlesschapter{\contentsname
+        \@mkboth{%
+           \MakeUppercase\contentsname}{\MakeUppercase\contentsname}}%
+    \@starttoc{toc}%
+    }
+
 \renewcommand*{\maketitle}{%
 \begin{titlepage}
   \AddToShipoutPictureBG*{%
   	\AtTextCenter{\makebox(0,0){\includegraphics[width=\textwidth]{figures/beltcrest_grey.pdf}}%
   }}
 	\begin{center}
-  	\begin{minipage}[t][15cm][b]{\textwidth}
+  	\begin{minipage}[t][16.5cm][b]{\textwidth}
     	\begin{center}
         \huge
         \@title\\[1cm]
-      	\scshape\LARGE
-      	\@author\\[0.5cm]
+      	\scshape\LARGE\bfseries\textcolor{deepred}{\@author}\\[0.5cm]
       	\large\mdseries\upshape
       	\@college\\
       	University of Oxford\\[1cm]
@@ -177,3 +188,50 @@ Path      = fonts/,%
 	\end{center}
 \end{titlepage}
 }
+
+% % Chapter quotation environment
+% \makeatletter
+% \newenvironment{chapquote}[2][2em]
+%   {\setlength{\@tempdima}{#1}%
+%    \def\chapquote@author{#2}%
+%    \parshape 1 \@tempdima \dimexpr\textwidth-2\@tempdima\relax%
+%    \itshape}
+%   {\par\normalfont\hfill--\ \chapquote@author\hspace*{\@tempdima}\par\bigskip}
+% \makeatother
+
+% This macro define an environment for front matter that is always
+% single column even in a double-column document.
+
+\newenvironment{alwayssingle}{%
+       \@restonecolfalse
+       \if@twocolumn\@restonecoltrue\onecolumn
+       \else\if@openright\cleardoublepage\else\clearpage\fi
+       \fi}%
+       {\if@restonecol\twocolumn
+       \else\newpage\thispagestyle{empty}\fi}
+
+% DEDICATION
+%
+% The dedication environment makes sure the dedication gets its
+% own page and is set out in verse format.
+
+\newenvironment{dedication}
+{\begin{alwayssingle}
+ \thispagestyle{empty}
+ \begin{center}
+ \vspace*{1.5cm}
+ {\LARGE }
+ \end{center}
+ \vspace{0.5cm}
+ \begin{verse}\begin{center}}
+{\end{center}\end{verse}\end{alwayssingle}}
+
+% ACKNOWLEDGEMENTS
+%
+% The acknowledgements environment puts a large, bold, centered
+% "Acknowledgements" label at the top of the page. The acknowledgements
+% themselves appear in a quote environment, i.e. tabbed in at both sides, and
+% on its own page.
+
+\newenvironment{acknowledgements}
+{\chapter*{Acknowledgements}}{}
