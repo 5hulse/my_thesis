@@ -7,7 +7,7 @@
 \LoadClass[openright,twoside,12pt,a4paper]{report}
 
 \newif\ifelectronicversion
-\electronicversiontrue
+\electronicversionfalse
 
 \DeclareOption{bindversion}{\electronicversionfalse}
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{report}}
@@ -15,40 +15,25 @@
 
 %%% colours
 \RequirePackage{xcolor}
-\definecolor{deepred}{HTML}{8b0000}
+\definecolor{headingcolor}{HTML}{8b0000}
 
 
 %%% font configuration
 \RequirePackage{fontspec}
-\RequirePackage[math-style=ISO,bold-style=ISO]{unicode-math}
+\RequirePackage[%
+    math-style=ISO,%
+    bold-style=ISO,%
+    nabla=upright,%
+]{unicode-math}
 
-% primary font: EB Garamond
-\setmainfont{EBGaramond}[
-Path           = fonts/,%
-Extension      = .otf,%
-UprightFont    = *-Regular,%
-BoldFont       = *-Bold,%
-ItalicFont     = *-Italic,%
-BoldItalicFont = *-BoldItalic,%
-]
-
-% Maths font: Garamond Maths
-\setmathfont{Garamond-Math}[
-Extension    = .otf,%
-Path         = fonts/,%
-StylisticSet = {1,8,5},%
-]
-
-% Monospaced font: cmuntt (primarily as it supports unicode characters)
-\setmonofont{cmuntt}[
-Extension = .otf,%
-Scale     = MatchLowercase,%
-Path      = fonts/,%
-]
+\setmainfont{EB Garamond}
+\setmonofont{JuliaMono}[Scale=MatchLowercase]
+\setmathfont{Garamond-Math}[StylisticSet={1,8,5}]
 
 \RequirePackage{eso-pic}
 \RequirePackage{graphicx}
 
+% 1.5 line spacing
 \linespread{1.25}
 
 % college name
@@ -79,7 +64,7 @@ Path      = fonts/,%
   includehead,%
   top      = 2.5cm,%
   bottom   = 2.5cm,%
-  inner    = 3.8cm,%
+  inner    = 2.8cm,%
   outer    = 1.8cm,%
   headsep  = 0.8cm,%
   footskip = 1.5cm,%
@@ -88,29 +73,31 @@ Path      = fonts/,%
 
 %%% Headers
 \RequirePackage{fancyhdr}
-
 \pagestyle{fancy}
-\renewcommand{\chaptermark}[1]{\markboth{\bfseries#1}{}}
-\renewcommand{\sectionmark}[1]{\markright{\bfseries#1}}
-  \fancyhf{}
-  \fancyhead[LE]{%
-    \makebox[0pt][r]{%
-      \colorbox{deepred}{\makebox[\textwidth][r]{\textcolor{white}{\thepage}\enskip}}\hspace*{1em}}%
-    {\rightmark}\hspace*{1em}\headrulefill%
-  }
-  \fancyhead[RO]{%
-    \mbox{}\headrulefill \hspace*{1em}{\leftmark}%
-    \makebox[0pt][l]{%
-      \hspace*{1em}\colorbox{deepred}{\makebox[\textwidth][l]{\enskip\textcolor{white}{\thepage}}}}%
-  }
+
+\renewcommand{\chaptermark}[1]{\markboth{{\bfseries \thechapter}\hspace{10pt}#1}{}}
+\renewcommand{\sectionmark}[1]{\markright{{\bfseries \thesection}\hspace{10pt}#1}}
+
+% Headers and footers for "plain" pages: essentially chapter title pages.
+\fancypagestyle{plain}{\fancyhf{}}
+
+% Headers and footers for "typical" pages.
+\fancyhf{}%
+\fancyhead[LE]{%
+\makebox[0pt][r]{%
+  \colorbox{headingcolor}{\makebox[\textwidth][r]{\textcolor{white}{\thepage}\enskip}}\hspace*{1em}}%
+\headrulefill\hspace*{1em}{\leftmark}\hspace*{1em}\headrulefill%
+}%
+\fancyhead[RO]{%
+\mbox{}\headrulefill \hspace*{1em}{\rightmark}\hspace*{1em}\headrulefill%
+\makebox[0pt][l]{%
+  \hspace*{1em}\colorbox{headingcolor}{\makebox[\textwidth][l]{\enskip\textcolor{white}{\thepage}}}}%
+}
 
 \renewcommand\headrulewidth{0pt}
 
 \def\headrulefill{\leaders\hrule width 0pt height 3pt depth -2.8pt \hfill}
 
-% remove page numbering from plain pages
-% affects chapter title pages
-\fancypagestyle{plain}{\fancyhf{}}
 
 % clear empty trailing left page
 % http://www.texfaq.org/FAQ-reallyblank
@@ -125,16 +112,12 @@ Path      = fonts/,%
 \RequirePackage[explicit]{titlesec}
 \RequirePackage{anyfontsize}
 
-\newenvironment{numberlesschapter}
-  {\setcounter{secnumdepth}{0}}
-  {\setcounter{secnumdepth}{2}}
-
 \titleformat{\chapter}[hang]{}{%
   \begin{minipage}[c][3em][c]{.8\textwidth}
     \bfseries\fontsize{40}{40}\selectfont#1
   \end{minipage}
   \hspace*{3em}
-  \colorbox{deepred}{%
+  \colorbox{headingcolor}{%
     \begin{minipage}[c][5em][c]{.5\textwidth}
       {\hspace*{.5em}\fontsize{90}{90}\selectfont\textcolor{white}{\scshape\thechapter}}
     \end{minipage}
@@ -146,18 +129,10 @@ Path      = fonts/,%
 % \newcommand{\nocontentsline}[3]{}
 % \newcommand{\tocless}[2]{\bgroup\let\addcontentsline=\nocontentsline#1{#2}\egroup}
 \renewcommand*\contentsname{Contents}
-\titlecontents{chapter}[0pt]{\vspace{15pt}\bfseries\large\color{deepred}}{\contentslabel{0pt}\scshape\hspace{20pt}}{}{\hfill\upshape\contentspage}[]
+\titlecontents{chapter}[0pt]{\vspace{15pt}\bfseries\large\color{headingcolor}}{\contentslabel{0pt}\scshape\hspace{20pt}}{}{\hfill\upshape\contentspage}[]
 \titlecontents{section}[20pt]{\vspace{5pt}\bfseries}{\contentslabel{0pt}\hspace{30pt}}{}{\mdseries\titlerule*[.5pc]{.}\bfseries\contentspage}
 \titlecontents{subsection}[40pt]{}{\contentslabel{0pt}\hspace{35pt}}{\contentsmargin{0pt}\scshape}{\titlerule*[.5pc]{.}\contentspage}[]
 \titlecontents{subsubsection}[60pt]{}{}{\contentsmargin{0pt}\itshape}{\titlerule*[.5pc]{.}\contentspage}[]
-
-\renewcommand{\contentsname}{Contents}
-\renewcommand\tableofcontents{%
-    \numberlesschapter{\contentsname
-        \@mkboth{%
-           \MakeUppercase\contentsname}{\MakeUppercase\contentsname}}%
-    \@starttoc{toc}%
-    }
 
 \renewcommand*{\maketitle}{%
 \begin{titlepage}
@@ -169,7 +144,7 @@ Path      = fonts/,%
     	\begin{center}
         \huge
         \@title\\[1cm]
-      	\scshape\LARGE\bfseries\textcolor{deepred}{\@author}\\[0.5cm]
+      	\scshape\LARGE\bfseries\textcolor{headingcolor}{\@author}\\[0.5cm]
       	\large\mdseries\upshape
       	\@college\\
       	University of Oxford\\[1cm]
@@ -215,16 +190,15 @@ Path      = fonts/,%
 % The dedication environment makes sure the dedication gets its
 % own page and is set out in verse format.
 
-\newenvironment{dedication}
-{\begin{alwayssingle}
- \thispagestyle{empty}
- \begin{center}
- \vspace*{1.5cm}
- {\LARGE }
- \end{center}
- \vspace{0.5cm}
- \begin{verse}\begin{center}}
-{\end{center}\end{verse}\end{alwayssingle}}
+\newenvironment{dedication}{%
+    \if@openright\cleardoublepage\else\clearpage\fi
+    \thispagestyle{empty}
+    \begin{center}
+    \vspace*{1.5cm}
+    \end{center}
+    \vspace{0.5cm}
+    \begin{verse}\begin{center}}%
+    {\end{center}\end{verse}}
 
 % ACKNOWLEDGEMENTS
 %
@@ -232,6 +206,13 @@ Path      = fonts/,%
 % "Acknowledgements" label at the top of the page. The acknowledgements
 % themselves appear in a quote environment, i.e. tabbed in at both sides, and
 % on its own page.
+\newenvironment{frontmattersection}[1]{%
+    \newpage\thispagestyle{empty}
+    \begin{center}
+    {\bfseries\fontsize{32}{32}\selectfont #1\\ \vspace{0.5em}}
+    \end{center}}%
+    {}
 
 \newenvironment{acknowledgements}
-{\chapter*{Acknowledgements}}{}
+{\begin{frontmattersection}{Acknowldegements}}
+{\end{frontmattersection}}
