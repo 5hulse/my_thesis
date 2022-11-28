@@ -7,7 +7,7 @@
 \LoadClass[openright,twoside,12pt,a4paper]{report}
 
 \newif\ifelectronicversion
-\electronicversionfalse
+\electronicversiontrue
 
 \DeclareOption{bindversion}{\electronicversionfalse}
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{report}}
@@ -15,7 +15,7 @@
 
 %%% colours
 \RequirePackage{xcolor}
-\definecolor{headingcolor}{HTML}{8b0000}
+\definecolor{headingcolor}{HTML}{002f60}
 
 
 %%% font configuration
@@ -48,7 +48,6 @@
 
 \def\crest{{\includegraphics[width=\textwidth]{figures/beltcrest_grey.pdf}}}
 
-
 \ifelectronicversion
   \RequirePackage[%
   includehead,%
@@ -64,8 +63,8 @@
   includehead,%
   top      = 2.5cm,%
   bottom   = 2.5cm,%
-  inner    = 2.8cm,%
-  outer    = 1.8cm,%
+  inner    = 3.3cm,%
+  outer    = 2.3cm,%
   headsep  = 0.8cm,%
   footskip = 1.5cm,%
   ]{geometry}
@@ -95,9 +94,7 @@
 }
 
 \renewcommand\headrulewidth{0pt}
-
 \def\headrulefill{\leaders\hrule width 0pt height 3pt depth -2.8pt \hfill}
-
 
 % clear empty trailing left page
 % http://www.texfaq.org/FAQ-reallyblank
@@ -114,25 +111,61 @@
 
 \titleformat{\chapter}[hang]{}{%
   \begin{minipage}[c][3em][c]{.8\textwidth}
-    \bfseries\fontsize{40}{40}\selectfont#1
+      \color{headingcolor}{
+          \scshape\fontsize{32}{40}\selectfont#1
+      }
   \end{minipage}
   \hspace*{3em}
   \colorbox{headingcolor}{%
-    \begin{minipage}[c][5em][c]{.5\textwidth}
-      {\hspace*{.5em}\fontsize{90}{90}\selectfont\textcolor{white}{\scshape\thechapter}}
+    \begin{minipage}[c][4em][c]{.5\textwidth}
+      {\hspace*{1em}\fontsize{50}{48}\selectfont\bfseries\textcolor{white}{\thechapter}}
     \end{minipage}
-}}{0pt}{}[\vspace*{5em}]
+}}{0pt}{}[\vspace*{4em}]
+
+\renewcommand*\contentsname{Table of Contents}
+\titleformat{name=\chapter,numberless}[display]
+    {}
+    {}
+    {-80pt}
+    {\centering\scshape\fontsize{30}{30}\selectfont #1}
 
 %%% ToC formatting
 \RequirePackage{titletoc}
-% % \tocless will be used to make summary not present in ToC
-% \newcommand{\nocontentsline}[3]{}
-% \newcommand{\tocless}[2]{\bgroup\let\addcontentsline=\nocontentsline#1{#2}\egroup}
-\renewcommand*\contentsname{Contents}
-\titlecontents{chapter}[0pt]{\vspace{15pt}\bfseries\large\color{headingcolor}}{\contentslabel{0pt}\scshape\hspace{20pt}}{}{\hfill\upshape\contentspage}[]
-\titlecontents{section}[20pt]{\vspace{5pt}\bfseries}{\contentslabel{0pt}\hspace{30pt}}{}{\mdseries\titlerule*[.5pc]{.}\bfseries\contentspage}
-\titlecontents{subsection}[40pt]{}{\contentslabel{0pt}\hspace{35pt}}{\contentsmargin{0pt}\scshape}{\titlerule*[.5pc]{.}\contentspage}[]
-\titlecontents{subsubsection}[60pt]{}{}{\contentsmargin{0pt}\itshape}{\titlerule*[.5pc]{.}\contentspage}[]
+% \tocless will be used to make summary not present in ToC
+\newcommand{\nocontentsline}[3]{}
+\newcommand{\tocless}[2]{\bgroup\let\addcontentsline=\nocontentsline#1{#2}\egroup}
+
+\titlecontents{chapter}
+[0pt]
+{\vspace{15pt}\large\color{headingcolor}}
+{\contentslabel{0pt}\scshape\hspace{20pt}}
+{}
+{\hfill\upshape\contentspage}
+[]
+
+\titlecontents{section}
+[20pt]
+{\vspace{5pt}\bfseries}
+{\contentslabel{0pt}\hspace{30pt}}
+{}
+{\mdseries\titlerule*[.5pc]{.}\bfseries\contentspage}
+[]
+
+\titlecontents{subsection}
+[40pt]
+{}
+{\contentslabel{0pt}\hspace{35pt}}
+{\contentsmargin{0pt}\scshape}
+{\titlerule*[.5pc]{.}\contentspage}
+[]
+
+\titlecontents{subsubsection}
+[60pt]
+{}
+{}
+{\contentsmargin{0pt}\itshape}
+{\titlerule*[.5pc]{.}\contentspage}
+[]
 
 \renewcommand*{\maketitle}{%
 \begin{titlepage}
@@ -164,34 +197,21 @@
 \end{titlepage}
 }
 
-% % Chapter quotation environment
-% \makeatletter
-% \newenvironment{chapquote}[2][2em]
-%   {\setlength{\@tempdima}{#1}%
-%    \def\chapquote@author{#2}%
-%    \parshape 1 \@tempdima \dimexpr\textwidth-2\@tempdima\relax%
-%    \itshape}
-%   {\par\normalfont\hfill--\ \chapquote@author\hspace*{\@tempdima}\par\bigskip}
-% \makeatother
-
-% This macro define an environment for front matter that is always
-% single column even in a double-column document.
-
-\newenvironment{alwayssingle}{%
-       \@restonecolfalse
-       \if@twocolumn\@restonecoltrue\onecolumn
-       \else\if@openright\cleardoublepage\else\clearpage\fi
-       \fi}%
-       {\if@restonecol\twocolumn
-       \else\newpage\thispagestyle{empty}\fi}
-
-% DEDICATION
-%
-% The dedication environment makes sure the dedication gets its
-% own page and is set out in verse format.
+\makeatletter
+\newenvironment{chapterquote}[1]
+    {%
+        \setlength{\@tempdima}{2em}%
+        \def\chapquote@author{#1}%
+        \vspace{-40pt}
+        \parshape 1 \@tempdima \dimexpr\textwidth-2\@tempdima\relax\itshape
+    }
+    {%
+        \par\normalfont\hfill--\ \chapquote@author\hspace*{\@tempdima}\par\bigskip\bigskip
+    }
+\makeatother
 
 \newenvironment{dedication}{%
-    \if@openright\cleardoublepage\else\clearpage\fi
+    \cleardoublepage
     \thispagestyle{empty}
     \begin{center}
     \vspace*{1.5cm}
@@ -200,19 +220,18 @@
     \begin{verse}\begin{center}}%
     {\end{center}\end{verse}}
 
-% ACKNOWLEDGEMENTS
-%
-% The acknowledgements environment puts a large, bold, centered
-% "Acknowledgements" label at the top of the page. The acknowledgements
-% themselves appear in a quote environment, i.e. tabbed in at both sides, and
-% on its own page.
 \newenvironment{frontmattersection}[1]{%
+    \cleardoublepage
     \newpage\thispagestyle{empty}
     \begin{center}
-    {\bfseries\fontsize{32}{32}\selectfont #1\\ \vspace{0.5em}}
+    {\scshape\fontsize{30}{30}\selectfont #1\\ \vspace{0.5em}}
     \end{center}}%
     {}
 
 \newenvironment{acknowledgements}
 {\begin{frontmattersection}{Acknowldegements}}
+{\end{frontmattersection}}
+
+\newenvironment{notation}
+{\begin{frontmattersection}{Abbreviations and Notation}}
 {\end{frontmattersection}}

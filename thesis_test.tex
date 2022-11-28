@@ -3,8 +3,8 @@
 % Generates version suitable for constructing a bound version (asymmetrical
 % margins)
 
-\documentclass{SGH_thesis}
-% \documentclass[bindversion]{SGH_thesis} % asymmetrical margin for bound version
+% \documentclass{SGH_thesis}
+\documentclass[bindversion]{SGH_thesis} % asymmetrical margin for bound version
 \usepackage{lipsum}
 
 \title{I Was Bored in Lockdown and So Decided to Make a Thesis Template}
@@ -29,6 +29,8 @@
 \input{text/front/dedication}
 \input{text/front/acknowledgements}
 \tableofcontents
+\listoffigures
+\listoftables
 \pagenumbering{arabic}
 \input{text/main/chapter_1}
 \input{text/main/chapter_2}
